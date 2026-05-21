@@ -5599,6 +5599,7 @@ function setupDictionaryUI() {
   const closeTrainingModalBtn = document.getElementById('closeTrainingModalBtn');
   const startTrainingFromDictBtn = document.getElementById('startTrainingFromDictBtn');
   const trainingCategoryLabel = document.getElementById('trainingCategoryLabel');
+  const trainingLimitSelect = document.getElementById('trainingLimitSelect');
   
   if (!modal || !openBtn) return;
 
@@ -6608,6 +6609,19 @@ function setupDictionaryUI() {
     });
   }
 
+  // 3g. Training Limit Select listener (20, 40, or All)
+  if (trainingLimitSelect) {
+    const savedLimit = localStorage.getItem('galaxy_training_limit') || '20';
+    trainingLimitSelect.value = savedLimit;
+
+    trainingLimitSelect.addEventListener('change', () => {
+      localStorage.setItem('galaxy_training_limit', trainingLimitSelect.value);
+      clearStudySession();
+      startStudySession();
+      resetFlashcard();
+    });
+  }
+
   // Open dictionary modal
   const openDictionaryModal = () => {
     window.dictForceStudyAll = false; // Reset force-study on new modal session
@@ -7597,8 +7611,27 @@ function startStudySession() {
   // Combine them: Priority is due words first, then new words
   let pool = [...dueWords];
   
-  // Supplement with new words if pool is below 20
-  if (pool.length < 20) {
+  // Determine training session word limit (20, 40, or all)
+  let limit = 20;
+  const limitSelect = document.getElementById('trainingLimitSelect');
+  if (limitSelect) {
+    const val = limitSelect.value;
+    if (val === 'all') {
+      limit = filteredWords.length;
+    } else {
+      limit = parseInt(val, 10) || 20;
+    }
+  } else {
+    const savedLimit = localStorage.getItem('galaxy_training_limit');
+    if (savedLimit === 'all') {
+      limit = filteredWords.length;
+    } else {
+      limit = parseInt(savedLimit || '20', 10) || 20;
+    }
+  }
+  
+  // Supplement with new words if pool is below limit
+  if (pool.length < limit) {
     newWords.forEach(w => {
       if (!pool.some(item => item.word.toLowerCase() === w.word.toLowerCase())) {
         pool.push(w);
@@ -7606,8 +7639,8 @@ function startStudySession() {
     });
   }
   
-  // If pool is still below 20 and we have other words, fill it up to 20
-  if (pool.length < 20) {
+  // If pool is still below limit and we have other words, fill it up to limit
+  if (pool.length < limit) {
     filteredWords.forEach(w => {
       if (!pool.some(item => item.word.toLowerCase() === w.word.toLowerCase())) {
         pool.push(w);
@@ -7615,8 +7648,8 @@ function startStudySession() {
     });
   }
 
-  // Max cap of 20 words per session as requested
-  pool = pool.slice(0, 20);
+  // Max cap of words per session based on selected limit
+  pool = pool.slice(0, limit);
 
   // Set active session queue state
   sessionQueue = pool;

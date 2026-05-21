@@ -1,0 +1,628 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;600;800&display=swap');
+
+/* --- CUSTOM VARIABLES --- */
+:root {
+    --bg-dark: #06060c;
+    --card-bg: rgba(14, 14, 28, 0.45);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    
+    /* Neon Palettes */
+    --neon-bestdog: #ff2a5f;
+    --neon-bestdog-glow: rgba(255, 42, 95, 0.4);
+    --neon-bestdog-bg: rgba(255, 42, 95, 0.08);
+
+    --neon-spotify: #00f2fe;
+    --neon-spotify-glow: rgba(0, 242, 254, 0.4);
+    --neon-spotify-bg: rgba(0, 242, 254, 0.08);
+
+    --neon-englishsub: #1db954;
+    --neon-englishsub-glow: rgba(29, 185, 84, 0.4);
+    --neon-englishsub-bg: rgba(29, 185, 84, 0.08);
+    
+    --transition-speed: 0.5s;
+    --transition-easing: cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* --- RESET & GENERAL --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+    padding: 2rem 1rem;
+}
+
+/* --- AMBIENT BG ANIMATION --- */
+.ambient-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    overflow: hidden;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.3;
+    mix-blend-mode: screen;
+}
+
+.orb-pink {
+    width: 45vw;
+    height: 45vw;
+    background: radial-gradient(circle, var(--neon-bestdog) 0%, transparent 70%);
+    top: -10%;
+    left: -15%;
+    animation: drift-pink 20s infinite alternate ease-in-out;
+}
+
+.orb-cyan {
+    width: 45vw;
+    height: 45vw;
+    background: radial-gradient(circle, var(--neon-spotify) 0%, transparent 70%);
+    bottom: -10%;
+    right: -15%;
+    animation: drift-cyan 20s infinite alternate ease-in-out;
+}
+
+.orb-green {
+    width: 45vw;
+    height: 45vw;
+    background: radial-gradient(circle, var(--neon-englishsub) 0%, transparent 70%);
+    bottom: 30%;
+    left: 20%;
+    animation: drift-green 25s infinite alternate ease-in-out;
+    opacity: 0.25;
+}
+
+/* Background Cyberpunk Grid pattern */
+.ambient-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    opacity: 0.8;
+}
+
+@keyframes drift-pink {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(15%, 15%) scale(1.15); }
+}
+
+@keyframes drift-cyan {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-15%, -15%) scale(1.15); }
+}
+
+@keyframes drift-green {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(10%, -15%) scale(1.1); }
+}
+
+/* --- HEADER SECTION --- */
+header {
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    z-index: 10;
+}
+
+.hub-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.02);
+}
+
+.hub-badge .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--neon-spotify);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--neon-spotify);
+    animation: pulse 1.8s infinite ease-in-out;
+}
+
+h1.hub-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+    position: relative;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+p.hub-subtitle {
+    font-size: clamp(0.95rem, 2vw, 1.25rem);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+/* --- CARDS GRID --- */
+.hub-container {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding: 2rem 1.5rem;
+    z-index: 10;
+    perspective: 1000px;
+}
+
+.project-card-link {
+    text-decoration: none;
+    outline: none;
+    color: inherit;
+    display: flex;
+}
+
+.project-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: 
+        transform var(--transition-speed) var(--transition-easing),
+        box-shadow var(--transition-speed) var(--transition-easing),
+        border-color var(--transition-speed) var(--transition-easing),
+        background-color var(--transition-speed) var(--transition-easing);
+}
+
+/* Top corner decorative brackets */
+.project-card::before, .project-card::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    opacity: 0.2;
+    transition: opacity var(--transition-speed) var(--transition-easing);
+}
+
+.project-card::before {
+    top: 20px;
+    left: 20px;
+    border-top: 2px solid var(--text-primary);
+    border-left: 2px solid var(--text-primary);
+}
+
+.project-card::after {
+    bottom: 20px;
+    right: 20px;
+    border-bottom: 2px solid var(--text-primary);
+    border-right: 2px solid var(--text-primary);
+}
+
+/* Icon / SVG Area */
+.card-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 
+        transform var(--transition-speed) var(--transition-easing),
+        background-color var(--transition-speed) var(--transition-easing),
+        border-color var(--transition-speed) var(--transition-easing),
+        box-shadow var(--transition-speed) var(--transition-easing);
+}
+
+.card-icon-wrapper svg {
+    width: 48px;
+    height: 48px;
+    fill: none;
+    stroke: var(--text-secondary);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke var(--transition-speed) var(--transition-easing), filter var(--transition-speed) var(--transition-easing);
+}
+
+/* Project Meta Tag */
+.project-status {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 12px;
+    border-radius: 50px;
+    margin-bottom: 1.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition-speed) var(--transition-easing);
+}
+
+.project-status::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--text-secondary);
+}
+
+/* Card Typography */
+.project-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    transition: color var(--transition-speed) var(--transition-easing);
+}
+
+.project-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 320px;
+    margin-bottom: 2rem;
+    font-weight: 300;
+    transition: color var(--transition-speed) var(--transition-easing);
+}
+
+.project-action-btn {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 28px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition-speed) var(--transition-easing);
+}
+
+.project-action-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    fill: none;
+    transition: transform var(--transition-speed) var(--transition-easing);
+}
+
+/* --- CARD HOVER EFFECTS --- */
+
+/* Hover state: BestDog (Neon Pink Theme) */
+.project-card-link:hover .card-bestdog {
+    transform: translateY(-8px) scale(1.05);
+    background-color: rgba(14, 14, 28, 0.65);
+    border-color: var(--neon-bestdog);
+    box-shadow: 
+        0 20px 40px rgba(255, 42, 95, 0.25), 
+        0 0 60px rgba(255, 42, 95, 0.15), 
+        inset 0 0 20px rgba(255, 42, 95, 0.15);
+}
+
+.card-bestdog:hover::before, .card-bestdog:hover::after {
+    opacity: 0.8;
+    border-color: var(--neon-bestdog);
+}
+
+.project-card-link:hover .card-bestdog .card-icon-wrapper {
+    background-color: var(--neon-bestdog-bg);
+    border-color: var(--neon-bestdog);
+    box-shadow: 0 0 25px var(--neon-bestdog-glow);
+    transform: rotate(5deg) scale(1.1);
+}
+
+.project-card-link:hover .card-bestdog .card-icon-wrapper svg {
+    stroke: var(--neon-bestdog);
+    filter: drop-shadow(0 0 8px var(--neon-bestdog-glow));
+}
+
+.project-card-link:hover .card-bestdog .project-status {
+    background: var(--neon-bestdog-bg);
+    border-color: rgba(255, 42, 95, 0.3);
+    color: var(--neon-bestdog);
+    box-shadow: 0 0 15px rgba(255, 42, 95, 0.15);
+}
+
+.project-card-link:hover .card-bestdog .project-status::before {
+    background-color: var(--neon-bestdog);
+    box-shadow: 0 0 8px var(--neon-bestdog);
+    animation: pulse 1s infinite alternate ease-in-out;
+}
+
+.project-card-link:hover .card-bestdog .project-title {
+    color: var(--neon-bestdog);
+    text-shadow: 0 0 15px rgba(255, 42, 95, 0.3);
+}
+
+.project-card-link:hover .card-bestdog .project-desc {
+    color: #f1f5f9;
+}
+
+.project-card-link:hover .card-bestdog .project-action-btn {
+    border-color: var(--neon-bestdog);
+    background-color: var(--neon-bestdog-bg);
+    box-shadow: 0 0 20px rgba(255, 42, 95, 0.2);
+    color: var(--text-primary);
+}
+
+.project-card-link:hover .card-bestdog .project-action-btn svg {
+    transform: translateX(4px);
+}
+
+
+/* Hover state: EnglishSub (Neon Green Theme) */
+.project-card-link:hover .card-englishsub {
+    transform: translateY(-8px) scale(1.05);
+    background-color: rgba(14, 14, 28, 0.65);
+    border-color: var(--neon-englishsub);
+    box-shadow: 
+        0 20px 40px rgba(29, 185, 84, 0.25), 
+        0 0 60px rgba(29, 185, 84, 0.15), 
+        inset 0 0 20px rgba(29, 185, 84, 0.15);
+}
+
+.card-englishsub:hover::before, .card-englishsub:hover::after {
+    opacity: 0.8;
+    border-color: var(--neon-englishsub);
+}
+
+.project-card-link:hover .card-englishsub .card-icon-wrapper {
+    background-color: var(--neon-englishsub-bg);
+    border-color: var(--neon-englishsub);
+    box-shadow: 0 0 25px var(--neon-englishsub-glow);
+    transform: rotate(5deg) scale(1.1);
+}
+
+.project-card-link:hover .card-englishsub .card-icon-wrapper svg {
+    stroke: var(--neon-englishsub);
+    filter: drop-shadow(0 0 8px var(--neon-englishsub-glow));
+}
+
+.project-card-link:hover .card-englishsub .project-status {
+    background: var(--neon-englishsub-bg);
+    border-color: rgba(29, 185, 84, 0.3);
+    color: var(--neon-englishsub);
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.15);
+}
+
+.project-card-link:hover .card-englishsub .project-status::before {
+    background-color: var(--neon-englishsub);
+    box-shadow: 0 0 8px var(--neon-englishsub);
+    animation: pulse 1s infinite alternate ease-in-out;
+}
+
+.project-card-link:hover .card-englishsub .project-title {
+    color: var(--neon-englishsub);
+    text-shadow: 0 0 15px rgba(29, 185, 84, 0.3);
+}
+
+.project-card-link:hover .card-englishsub .project-desc {
+    color: #f1f5f9;
+}
+
+.project-card-link:hover .card-englishsub .project-action-btn {
+    border-color: var(--neon-englishsub);
+    background-color: var(--neon-englishsub-bg);
+    box-shadow: 0 0 20px rgba(29, 185, 84, 0.2);
+    color: var(--text-primary);
+}
+
+.project-card-link:hover .card-englishsub .project-action-btn svg {
+    transform: translateX(4px);
+}
+
+
+/* Hover state: SpotifyAnalyzer (Neon Cyan Theme) */
+.project-card-link:hover .card-spotify {
+    transform: translateY(-8px) scale(1.05);
+    background-color: rgba(14, 14, 28, 0.65);
+    border-color: var(--neon-spotify);
+    box-shadow: 
+        0 20px 40px rgba(0, 242, 254, 0.25), 
+        0 0 60px rgba(0, 242, 254, 0.15), 
+        inset 0 0 20px rgba(0, 242, 254, 0.15);
+}
+
+.card-spotify:hover::before, .card-spotify:hover::after {
+    opacity: 0.8;
+    border-color: var(--neon-spotify);
+}
+
+.project-card-link:hover .card-spotify .card-icon-wrapper {
+    background-color: var(--neon-spotify-bg);
+    border-color: var(--neon-spotify);
+    box-shadow: 0 0 25px var(--neon-spotify-glow);
+    transform: rotate(-5deg) scale(1.1);
+}
+
+.project-card-link:hover .card-spotify .card-icon-wrapper svg {
+    stroke: var(--neon-spotify);
+    filter: drop-shadow(0 0 8px var(--neon-spotify-glow));
+}
+
+.project-card-link:hover .card-spotify .project-status {
+    background: var(--neon-spotify-bg);
+    border-color: rgba(0, 242, 254, 0.3);
+    color: var(--neon-spotify);
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.15);
+}
+
+.project-card-link:hover .card-spotify .project-status::before {
+    background-color: var(--neon-spotify);
+    box-shadow: 0 0 8px var(--neon-spotify);
+    animation: pulse 1s infinite alternate ease-in-out;
+}
+
+.project-card-link:hover .card-spotify .project-title {
+    color: var(--neon-spotify);
+    text-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+}
+
+.project-card-link:hover .card-spotify .project-desc {
+    color: #f1f5f9;
+}
+
+.project-card-link:hover .card-spotify .project-action-btn {
+    border-color: var(--neon-spotify);
+    background-color: var(--neon-spotify-bg);
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+    color: var(--text-primary);
+}
+
+.project-card-link:hover .card-spotify .project-action-btn svg {
+    transform: translateX(4px);
+}
+
+/* --- FOOTER --- */
+footer {
+    text-align: center;
+    margin-top: 3rem;
+    z-index: 10;
+}
+
+.footer-connection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.footer-connection .conn-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.footer-copyright {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.25);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* --- ANIMATION KEYFRAMES --- */
+@keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* --- RESPONSIVE LAYOUTS --- */
+@media (max-width: 1024px) {
+    .hub-container {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 900px;
+        gap: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1.5rem 1rem;
+    }
+
+    header {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .hub-container {
+        grid-template-columns: 1fr;
+        gap: 1.8rem;
+        padding: 1rem 0;
+    }
+    
+    .project-card {
+        padding: 2.5rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1.hub-title {
+        letter-spacing: 2px;
+    }
+    
+    .project-card {
+        border-radius: 20px;
+    }
+    
+    .card-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-icon-wrapper svg {
+        width: 38px;
+        height: 38px;
+    }
+}

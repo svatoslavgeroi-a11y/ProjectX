@@ -1,0 +1,38 @@
+--- VERIFIED TOP ARTISTS ---
+Radiohead: 11 hits
+RHCP: 9 hits
+The Beatles: 9 hits
+KSB Music: 7 hits
+Twenty One Pilots: 7 hits
+ЛСП: 6 hits
+Kanye West: 5 hits
+Tyler, The Creator: 5 hits
+Mac DeMarco: 4 hits
+Pink Floyd: 3 hits
+Muse: 3 hits
+Billie Eilish: 3 hits
+Korn: 3 hits
+Хаски: 3 hits
+Richard Cheese: 3 hits
+
+--- VERIFIED TOP SONGS AND MATCHED ARTISTS ---
+Track: 'Кент' | Artist: 'KSB muzic' | Hits: 2
+Track: 'Wish You Were Here' | Artist: 'Pink Floyd' | Hits: 2
+Track: 'Пиво' | Artist: 'KSB muzic' | Hits: 2
+Track: 'На урсе' | Artist: 'KSB muzic' | Hits: 2
+Track: 'Бас' | Artist: 'KSB muzic' | Hits: 2
+Track: 'Руинеры' | Artist: 'KSB muzic' | Hits: 2
+Track: 'Когда-нибудь' | Artist: 'KSB muzic' | Hits: 2
+Track: 'Creep (Richard Cheese Cover)' | Artist: 'Radiohead' | Hits: 2
+Track: 'Roddy' | Artist: 'Djo' | Hits: 2
+Track: 'A Wolf At the Door' | Artist: 'Radiohead' | Hits: 2
+Track: 'Too Much To Ask' | Artist: 'Arctic Monkeys' | Hits: 2
+Track: 'A New Level' | Artist: 'Pantera' | Hits: 2
+Track: 'Tommy The Cat' | Artist: 'Primus' | Hits: 2
+Track: 'Flashing Lights' | Artist: 'Kanye West, Dwele' | Hits: 2
+Track: 'What A Wonderful World' | Artist: 'Louis Armstrong' | Hits: 2
+Track: 'Veridis Quo' | Artist: 'Daft Punk' | Hits: 2
+Track: 'All My Loving' | Artist: 'The Beatles' | Hits: 2
+Track: 'Rapp Snitvh Knishes' | Artist: '—' | Hits: 2
+Track: 'Man of War' | Artist: 'Radiohead' | Hits: 2
+Track: 'SHINOBI' | Artist: 'OBLADAET' | Hits: 1

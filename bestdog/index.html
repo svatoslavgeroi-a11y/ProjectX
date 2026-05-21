@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Best Dog Gallery — Галерея лучших пёсиков</title>
+    <meta name="description"
+        content="Бесконечная галерея случайных фотографий собак. Оценивайте, собирайте косточки и открывайте достижения!">
+    <link rel="stylesheet" href="style.css?v=5.0.52">
+    <link rel="stylesheet" href="fonts/outfit.css">
+    <style>
+        /* УБИЙЦА БАГОВ: ПРЯМАЯ ИНЪЕКЦИЯ В HTML */
+        body.dark-theme button[id*="shop"],
+        body.dark-theme .side-btn img[src*="shop"],
+        body.dark-theme .side-btn:has(img[src*="cart"]),
+        body.dark-theme .side-btn:has(span:contains('🛒')) {
+            background: rgba(255, 255, 255, 0.1) !important;
+            filter: none !important;
+        }
+
+        body.dark-theme button[id*="shop"]>*,
+        body.dark-theme .side-btn:has(img[src*="cart"])>*,
+        body.dark-theme .side-btn:has(span:contains('🛒'))>* {
+            filter: invert(1) brightness(2) !important;
+        }
+
+        button[class*="close"]>span,
+        button[class*="close"]>div,
+        button[class*="close"]>i,
+        button[class*="close"]::before,
+        button[class*="close"]::after {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+        }
+
+        #lightbox {
+            z-index: 10000 !important;
+        }
+
+        body.light-theme .bones-wallet {
+            background: #ffffff !important;
+            border: 2px solid #222222 !important;
+            color: #222222 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        body.light-theme .bones-wallet .bone-icon {
+            text-shadow: -1px -1px 0 #222, 1px -1px 0 #222, -1px 1px 0 #222, 1px 1px 0 #222 !important;
+        }
+    </style>
+</head>
+
+<body class="dark-theme">
+    <!-- Премиум-оверлей при прямом запуске через file:/// -->
+    <div id="cors-warning-overlay" style="display:none; position:fixed; inset:0; background:radial-gradient(circle at center, #0f0c1b 0%, #05020a 100%); z-index:99999999; justify-content:center; align-items:center; color:#fff; font-family:'Outfit', 'Segoe UI', sans-serif; padding:20px; text-shadow: none;">
+        <div style="background:rgba(20, 15, 35, 0.6); border: 2px solid #ff2a5f; box-shadow: 0 0 50px rgba(255, 42, 95, 0.3); border-radius:24px; max-width:600px; width:100%; padding:40px; text-align:center; backdrop-filter:blur(20px); box-sizing: border-box;">
+            <div style="font-size:80px; margin-bottom:20px; animation: pulseGlow 2s infinite alternate; line-height: 1;">🛑</div>
+            <h2 style="font-size:2rem; font-weight:800; margin-bottom:15px; background:linear-gradient(135deg, #ff2a5f 0%, #ff7e40 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-family:'Outfit', sans-serif; text-transform:none; letter-spacing:normal;">Запуск через файл заблокирован</h2>
+            <p style="font-size:1.05rem; color:#94a3b8; line-height:1.6; margin-bottom:30px; font-weight:300;">
+                Браузеры блокируют загрузку ES-модулей и API собак при открытии игры напрямую через двойной клик по файлу (протокол <code style="background:rgba(255,255,255,0.08); padding:3px 6px; border-radius:6px; color:#ff2a5f; font-family: monospace;">file://</code>).
+            </p>
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:20px 24px; text-align:left; margin-bottom:30px; box-sizing: border-box;">
+                <h3 style="font-size:1.1rem; font-weight:700; color:#00f2fe; margin-bottom:12px; display:flex; align-items:center; gap:8px; margin-top:0;">
+                    <span>🚀</span> Как запустить игру правильно:
+                </h3>
+                <ol style="margin:0 0 0 20px; color:#cbd5e1; line-height:1.8; font-size:0.95rem; padding:0;">
+                    <li style="margin-bottom:8px;">Зайдите в корневую папку <strong style="color:#fff;">ProgectX</strong> в проводнике.</li>
+                    <li style="margin-bottom:8px;">Запустите двойным кликом файл <strong style="color:#00f2fe; text-shadow:0 0 8px rgba(0,242,254,0.3);">запуск_мультивселенной.bat</strong>.</li>
+                    <li>Игра автоматически откроется по адресу <strong style="color:#ff2a5f;">http://localhost:3000/bestdog/</strong> и будет работать идеально!</li>
+                </ol>
+            </div>
+            <p style="font-size:0.85rem; color:#64748b; margin:0;">
+                Этот оверлей показывается автоматически при обнаружении прямого открытия HTML-файла.
+            </p>
+        </div>
+    </div>
+    <script>
+        if (window.location.protocol === 'file:') {
+            document.getElementById('cors-warning-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            if (document.getElementById('app-content')) {
+                document.getElementById('app-content').style.display = 'none';
+            }
+        }
+    </script>
+    <style>
+        @keyframes pulseGlow {
+            from { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 42, 95, 0.5)); }
+            to { transform: scale(1.08); filter: drop-shadow(0 0 25px rgba(255, 42, 95, 0.9)); }
+        }
+    </style>
+
+    <button id="theme-toggle" class="theme-toggle" aria-label="Переключить тему">🌓</button>
+
+    <!-- Виджет баланса косточек (Кошелек), перенесенный в правый верхний угол -->
+    <div class="bones-wallet spotify-wallet floating-wallet" id="global-bones">
+        <div class="wallet-player">
+            <span class="bone-icon">🦴</span>
+            <div class="wallet-info">
+                <span class="wallet-label">Собачий баланс</span>
+                <span class="wallet-val"><span id="bones-balance">0</span> косточек</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Панель навигации Spotify Sidebar -->
+    <div class="spotify-sidebar">
+        <div class="spotify-logo">
+            <span class="spotify-logo-icon">🟢</span> Best<span>dog</span>
+        </div>
+
+        <nav class="spotify-nav">
+            <button class="spotify-nav-item active" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <span class="nav-icon">🏠</span> Главная лента
+            </button>
+            <button class="spotify-nav-item" id="side-collection-btn">
+                <span class="nav-icon">📸</span> Альбом Создателя
+            </button>
+            <button class="spotify-nav-item" id="side-rating-btn">
+                <span class="nav-icon">📊</span> Рейтинг пёсиков
+            </button>
+            <button class="spotify-nav-item" id="side-shop-btn">
+                <span class="nav-icon">🛒</span> Магазин Вершителя
+            </button>
+            <button class="spotify-nav-item" id="side-achievements-btn">
+                <span class="nav-icon">🏆</span> Мои достижения
+            </button>
+            <button class="spotify-nav-item" id="side-minigame-btn">
+                <span class="nav-icon">🕹️</span> Guess Мини-игра
+            </button>
+            <button class="spotify-nav-item" id="side-breeds-btn">
+                <span class="nav-icon">🐾</span> Битва пород
+            </button>
+            <button class="spotify-nav-item" id="side-hall-btn">
+                <span class="nav-icon">🎖️</span> Зал славы
+            </button>
+        </nav>
+
+        <!-- Компактные настройки и эффекты в сайдбаре -->
+        <div class="meme-hub-container spotify-sidebar-hub">
+            <button class="spotify-nav-item main-hub-trigger" style="width: 100%;">
+                <span class="nav-icon">✨</span> Эффекты и темы
+            </button>
+            <div class="meme-hub-dropdown">
+                <button id="trigger-cucumber-btn" class="hub-item-btn hidden" title="Тема Огурца">🥒</button>
+                <button id="trigger-sneaker-btn" class="hub-item-btn hidden" title="Запуск Нью Беленс">👟</button>
+                <button id="trigger-creator-theme-btn" class="hub-item-btn hidden" title="Режим Создателя">😎</button>
+                <div id="cursor-toggle-container" class="hidden">
+                    <label class="switch">
+                        <input type="checkbox" id="cursor-checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="toggle-label">Курсор Создателя</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка Короля недели в сайдбаре -->
+        <div class="spotify-king-card" id="side-king" title="Король недели">
+            <div class="king-avatar-wrapper">
+                <img src="img/fallback_dog_2.jpg" alt="Король" id="king-img"
+                    onerror="this.onerror=null; this.src='img/fallback_dog_1.svg'">
+                <div class="king-badge">👑</div>
+            </div>
+            <div class="king-details">
+                <div class="king-title">Король недели</div>
+                <div class="king-sub">Узнай победителя!</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="app-content">
+        <header class="spotify-header">
+            <h1>Bestdog Premium Analyzer</h1>
+            <p>Добро пожаловать в музыкальные чарты питомцев! Голосуйте, сканируйте породы и собирайте Альбом Создателя 🟢✨</p>
+        </header>
+
+        <main class="container">
+            <div id="dogs-container" class="dogs-grid-container dog-grid"></div>
+            <div id="loader" class="loader" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+            <div class="load-more-wrapper">
+                <button id="load-more-btn" class="action-btn">Смотреть ещё собак 🐾</button>
+            </div>
+        </main>
+
+
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="rating-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title"><span class="modal-icon">🐕</span> Рейтинг пёсиков</h2>
+            <div class="tabs">
+                <button class="tab-btn active" data-rating-tab="global">Общий топ</button>
+                <button class="tab-btn" data-rating-tab="local">Мои топы</button>
+            </div>
+
+            <div class="filter-bar">
+                <select id="rating-sort-criteria">
+                    <option value="avg">Общий балл ⭐</option>
+                    <option value="likes">Лайки ❤️</option>
+                    <option value="cringe">Кринжовость 🤡</option>
+                    <option value="size">Размерность 🐘</option>
+                    <option value="cute">Милость 🥺</option>
+                    <option value="aggressive">Агрессивность 🌋</option>
+                    <option value="beauty">Красивность ✨</option>
+                </select>
+                <select id="rating-sort-order">
+                    <option value="desc">Сначала лучшие</option>
+                    <option value="asc">Сначала худшие</option>
+                </select>
+            </div>
+
+            <div id="rating-list-container" class="rating-list">
+                <!-- Сюда рендерится список -->
+            </div>
+            <button id="btn-modal-continue" class="action-btn next-round-btn"
+                style="margin-top:20px; width:100%; display:block !important;"
+                onclick="window.closeAnyModal(this.closest('.modal'))">Продолжить ➡️</button>
+        </div>
+    </div>
+
+    <div id="game-modal" class="modal">
+        <div class="modal-content game-content">
+            <span id="close-game" class="close-modal" onclick="window.closeGameModalDirectly ? window.closeGameModalDirectly() : (document.getElementById('game-modal').classList.remove('active'), document.body.style.overflow='', document.body.classList.remove('no-scroll'))">&times;</span>
+            <h2 class="modal-title"><span class="modal-icon">🎮</span> Угадай породу</h2>
+
+            <div class="game-stats-bar">
+                <div class="game-stat">Очки: <span id="game-score">0</span></div>
+                <div class="game-stat">Серия: <span id="game-streak">0</span></div>
+                <button id="open-leaderboard-btn" class="game-mini-btn" title="Таблица лидеров">🏆</button>
+            </div>
+
+            <!-- Плашка множителя (v4.2.3) -->
+            <div class="game-reward-banner">
+                Следующий ответ: <span id="current-reward-val">+1</span> <span class="bone-icon">🦴</span> <span
+                    id="multiplier-badge" class="badge-x1">(X1)</span>
+            </div>
+
+            <!-- Таймер -->
+            <div class="game-timer-wrapper">
+                <div class="game-timer-track">
+                    <div id="game-timer-bar" class="game-timer-bar"></div>
+                </div>
+                <span id="game-timer-text" class="game-timer-text">15</span>
+            </div>
+
+            <div id="game-main-view">
+                <div class="game-img-wrapper">
+                    <img id="game-main-img" class="target-dog" src="" alt="dog to guess">
+                </div>
+                <div id="game-options" class="game-options-grid">
+                    <!-- Кнопки ответов будут здесь -->
+                </div>
+            </div>
+
+            <div id="game-leaderboard-view" class="game-leaderboard-container hidden">
+                <div class="leaderboard-header">
+                    <h3>🏆 Топ Кинологов</h3>
+                    <button id="close-leaderboard-btn" class="game-mini-btn">✕</button>
+                </div>
+                <div id="leaderboard-list" class="leaderboard-list">
+                    <!-- Список лидеров из Firebase -->
+                    <div class="loading-leaderboard">Загрузка...</div>
+                </div>
+            </div>
+
+            <div id="game-feedback" class="game-feedback hidden"></div>
+            <button id="next-round-btn" class="action-btn next-round-btn hidden"
+                onclick="window.nextGameRound()">Продолжить ➡️</button>
+        </div>
+    </div>
+
+    <div id="king-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title"><span class="modal-icon">👑</span> Король недели</h2>
+            <div id="king-modal-content"></div>
+        </div>
+    </div>
+
+    <div id="hall-modal" class="modal">
+        <div class="modal-content hall-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title"><span class="modal-icon">✨</span> Зал славы</h2>
+            <div class="tabs">
+                <button class="tab-btn active" data-hall-tab="winners">Номинанты недели</button>
+                <button class="tab-btn" data-hall-tab="breeds">Битва пород</button>
+            </div>
+            <div id="hall-winners-view" class="hall-view active">
+                <div id="hall-grid" class="hall-grid"></div>
+            </div>
+            <div id="hall-breeds-view" class="hall-view" style="display: none;">
+                <div class="breeds-list" id="breeds-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="achievements-modal" class="modal">
+        <div class="modal-content achievements-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title"><span class="modal-icon">🏅</span> Мои достижения</h2>
+            <div id="achievements-grid" class="achievements-grid"></div>
+        </div>
+    </div>
+
+    <div id="shop-modal" class="modal">
+        <div class="modal-content shop-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title"><span class="modal-icon">🛒</span> Магазин кастомизации</h2>
+            <div id="shop-grid" class="shop-grid"></div>
+        </div>
+    </div>
+
+    <div id="vote-modal" class="modal">
+        <div class="modal-content vote-modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="vote-split">
+                <div class="vote-left">
+                    <img id="vote-img" src="" alt="vote dog">
+                    <div id="vote-likes-count" class="vote-likes-badge">❤️ 0</div>
+                    <div class="total-rating-badge score-badge">
+                        <span class="rating-title">Итог:</span>
+                        <span id="live-average-score">5.0</span>
+                    </div>
+                </div>
+                <div class="vote-right">
+                    <h2>Твой вердикт</h2>
+                    <div id="criteria-list" class="criteria-list"></div>
+                    <button id="submit-vote" class="btn-submit-vote">Сохранить вердикт</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <div class="lightbox-content"><img id="lightbox-img" src=""></div>
+    </div>
+
+    <!-- Модальное окно детализации ачивки (v4.2.0) -->
+    <div id="achievement-detail-modal" class="modal">
+        <div class="achievement-detail-content">
+            <span class="close-modal" onclick="window.closeAchievementDetail()">&times;</span>
+            <div class="ach-detail-header">
+                <div id="ach-detail-icon" class="ach-detail-large-icon"></div>
+                <h2 id="ach-detail-title">Название</h2>
+            </div>
+            <div class="ach-detail-body">
+                <p id="ach-detail-desc">Описание достижения...</p>
+                <div class="ach-detail-status">Статус: <span id="ach-detail-status-text">Получено! ✅</span></div>
+            </div>
+            <button class="btn-buy" onclick="window.closeAchievementDetail()"
+                style="margin-top: 20px; width: 100%;">Отлично!</button>
+        </div>
+    </div>
+
+    <div id="balance-modal" class="modal">
+        <div class="modal-content balance-modal-content">
+            <span class="close-modal"
+                onclick="window.closeAnyModal(document.getElementById('balance-modal'))">&times;</span>
+            <h2 class="modal-title"><span class="modal-icon">💰</span> Твой баланс</h2>
+            <div class="wallet-container">
+                <div class="wallet-item">
+                    <span class="wallet-value bones-value force-white-text" id="modal-bones-val">0</span>
+                    <span class="wallet-icon">🦴</span>
+                </div>
+                <div class="wallet-item">
+                    <span class="wallet-value superlikes-value force-white-text" id="modal-superlikes-val">0</span>
+                    <span class="wallet-icon">💖</span>
+                </div>
+            </div>
+            <p>Вы успешно активировали режим стильного баланса! ✨</p>
+            <button class="btn-buy" onclick="window.closeAnyModal(document.getElementById('balance-modal'))"
+                style="margin-top: 20px; width: 100%;">Понятно!</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно Альбома Создателя -->
+    <div id="collection-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title"><span class="modal-icon">📸</span> Альбом Создателя</h2>
+            
+            <div class="collection-progress-container">
+                <div class="collection-progress-text">
+                    <span>Собрано лиц Создателя:</span>
+                    <span id="collection-percent-text">0 из 27 (0%)</span>
+                </div>
+                <div class="collection-progress-bar-wrapper">
+                    <div id="collection-progress-bar" class="collection-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="collection-grid" class="collection-grid">
+                <!-- Заполняется динамически -->
+            </div>
+            
+            <button class="action-btn next-round-btn" style="margin-top:20px; width:100%; display:block !important;" onclick="window.closeAnyModal(this.closest('.modal'))">Продолжить ➡️</button>
+        </div>
+    </div>
+
+    <!-- Детальная Карточка Создателя -->
+    <div id="creator-detail-modal" class="modal">
+        <div class="modal-content" style="max-width: 420px; text-align: center; position: relative;">
+            <span class="close-modal" id="creator-detail-close-btn" onclick="document.getElementById('creator-detail-modal').classList.remove('active')">&times;</span>
+            <h2 id="creator-detail-title" style="margin-bottom: 5px; font-size: 1.5rem; background: linear-gradient(90deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none;">Создатель</h2>
+            <div id="creator-detail-breed" style="font-size: 1rem; color: #a855f7; font-weight: bold; margin-bottom: 20px;"></div>
+            
+            <div style="position: relative; width: 140px; height: 140px; margin: 0 auto 20px; border-radius: 50%; padding: 4px; background: linear-gradient(135deg, #a855f7, #ec4899); box-shadow: 0 8px 32px rgba(168, 85, 247, 0.4);">
+                <img id="creator-detail-img" src="" alt="Creator Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid #111;">
+                <div style="position: absolute; bottom: 5px; right: 5px; background: #22c55e; width: 16px; height: 16px; border-radius: 50%; border: 3px solid #111;" title="В сети"></div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; text-align: left; margin-bottom: 20px;">
+                <div style="margin-bottom: 10px; font-size: 0.85rem; color: #888;">🌌 Аура: <span id="creator-aura-val" style="color: #fff; font-weight: 600;">Фиолетовый космос</span></div>
+                <div style="margin-bottom: 10px; font-size: 0.85rem; color: #888;">🔋 Заряд энергии: <span id="creator-energy-val" style="color: #fff; font-weight: 600;">100%</span></div>
+                <div style="margin-bottom: 10px; font-size: 0.85rem; color: #888;">🎭 Текущий статус: <span id="creator-status-val" style="color: #fff; font-weight: 600;">Кодит на 200 FPS</span></div>
+                <div style="font-size: 0.85rem; color: #888; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; margin-top: 10px; line-height: 1.4;">
+                    🔮 Предсказание: <span id="creator-prediction-val" style="color: #e2e8f0; font-style: italic;">Все пёсики будут накормлены!</span>
+                </div>
+            </div>
+            
+            <button class="action-btn next-round-btn" onclick="document.getElementById('creator-detail-modal').classList.remove('active')" style="width: 100%; display: block !important;">
+                Закрыть анкету
+            </button>
+        </div>
+    </div>
+
+    <!-- Полноэкранный триумфальный оверлей при открытии нового лица -->
+    <div id="premium-collection-toast" class="premium-toast-backdrop">
+        <div class="premium-toast-card">
+            <div class="premium-toast-sparkles">✨ 🎉 ✨</div>
+            <h3 class="premium-toast-title">НОВЫЙ ПЕРСОНАЖ РАЗБЛОКИРОВАН!</h3>
+            <div class="premium-toast-image-wrapper">
+                <img id="premium-toast-img" src="" alt="Unlocked Face">
+            </div>
+            <div class="premium-toast-breed" id="premium-toast-breed">🐕 Банник</div>
+            <p class="premium-toast-desc">Этот персонаж успешно добавлен в вашу Коллекцию Создателя!</p>
+            <div class="premium-toast-actions">
+                <button class="premium-toast-btn primary" id="premium-toast-view-btn">В альбом 📸</button>
+                <button class="premium-toast-btn secondary" onclick="document.getElementById('premium-collection-toast').classList.remove('active')">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-toast" class="toast"></div>
+
+
+    <script src="js/vanilla-tilt.min.js"></script>
+    <script type="module" src="script.js?v=5.2.5"></script>
+
+</body>
+
+</html>

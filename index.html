@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя Мультивселенная | Hub Portal</title>
+    <meta name="description" content="Единый центр управления проектами: интерактивная игра BestDog, музыкальный анализатор SpotifyAnalyzer и интерактивное обучение EnglishSub под единым куполом.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Премиум-оверлей при прямом запуске через file:/// -->
+    <div id="cors-warning-overlay" style="display:none; position:fixed; inset:0; background:radial-gradient(circle at center, #0f0c1b 0%, #05020a 100%); z-index:99999999; justify-content:center; align-items:center; color:#fff; font-family:'Outfit', 'Segoe UI', sans-serif; padding:20px; text-shadow: none;">
+        <div style="background:rgba(20, 15, 35, 0.6); border: 2px solid #00f2fe; box-shadow: 0 0 50px rgba(0, 242, 254, 0.3); border-radius:24px; max-width:600px; width:100%; padding:40px; text-align:center; backdrop-filter:blur(20px); box-sizing: border-box;">
+            <div style="font-size:80px; margin-bottom:20px; animation: pulseGlow 2s infinite alternate; line-height: 1;">🛑</div>
+            <h2 style="font-size:2rem; font-weight:800; margin-bottom:15px; background:linear-gradient(135deg, #00f2fe 0%, #a5b4fc 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-family:'Outfit', sans-serif; text-transform:none; letter-spacing:normal;">Запуск через файл заблокирован</h2>
+            <p style="font-size:1.05rem; color:#94a3b8; line-height:1.6; margin-bottom:30px; font-weight:300;">
+                Браузеры блокируют загрузку ES-модулей, базу данных и API при запуске портала через двойной клик по файлу (протокол <code style="background:rgba(255,255,255,0.08); padding:3px 6px; border-radius:6px; color:#00f2fe; font-family: monospace;">file://</code>).
+            </p>
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:20px 24px; text-align:left; margin-bottom:30px; box-sizing: border-box;">
+                <h3 style="font-size:1.1rem; font-weight:700; color:#ff2a5f; margin-bottom:12px; display:flex; align-items:center; gap:8px; margin-top:0;">
+                    <span>🚀</span> Как запустить портал правильно:
+                </h3>
+                <ol style="margin:0 0 0 20px; color:#cbd5e1; line-height:1.8; font-size:0.95rem; padding:0;">
+                    <li style="margin-bottom:8px;">Зайдите в корневую папку <strong style="color:#fff;">ProgectX</strong> в проводнике.</li>
+                    <li style="margin-bottom:8px;">Запустите двойным кликом файл <strong style="color:#ff2a5f; text-shadow:0 0 8px rgba(255, 42, 95, 0.3);">запуск_мультивселенной.bat</strong>.</li>
+                    <li>Все проекты автоматически откроются по адресу <strong style="color:#00f2fe;">http://localhost:3000/</strong> и будут работать идеально!</li>
+                </ol>
+            </div>
+            <p style="font-size:0.85rem; color:#64748b; margin:0;">
+                Этот оверлей показывается автоматически при обнаружении прямого открытия HTML-файла.
+            </p>
+        </div>
+    </div>
+    <script>
+        if (window.location.protocol === 'file:') {
+            document.getElementById('cors-warning-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+    </script>
+    <style>
+        @keyframes pulseGlow {
+            from { transform: scale(1); filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5)); }
+            to { transform: scale(1.08); filter: drop-shadow(0 0 25px rgba(0, 242, 254, 0.9)); }
+        }
+    </style>
+
+    <!-- Ambient Neon Backgrounds -->
+    <div class="ambient-container">
+        <div class="orb orb-pink"></div>
+        <div class="orb orb-cyan"></div>
+        <div class="orb orb-green"></div>
+        <div class="ambient-grid"></div>
+    </div>
+
+    <!-- Header Portal Info -->
+    <header>
+        <div class="hub-badge" id="hub-status-badge">
+            <span class="pulse-dot"></span>
+            Режим Вершителя
+        </div>
+        <h1 class="hub-title" id="main-title">Моя Мультивселенная</h1>
+        <p class="hub-subtitle" id="main-subtitle">Добро пожаловать в единый центр управления мирами. Выберите проект для инициализации и запуска сессии.</p>
+    </header>
+
+    <!-- Cards Layout Grid -->
+    <main class="hub-container" id="hub-cards-grid">
+        
+        <!-- Card 1: BestDog Game -->
+        <a href="./bestdog/index.html" class="project-card-link" id="link-bestdog">
+            <div class="project-card card-bestdog">
+                <div class="card-icon-wrapper">
+                    <!-- Premium Neon Paw SVG -->
+                    <svg viewBox="0 0 24 24">
+                        <!-- Main central pad -->
+                        <path d="M12 14c-1.66 0-3 1.2-3 2.7 0 1.3 1.34 2.8 3 2.8s3-1.5 3-2.8c0-1.5-1.34-2.7-3-2.7z" />
+                        <!-- Toe 1 -->
+                        <circle cx="6.5" cy="11.5" r="1.8" />
+                        <!-- Toe 2 -->
+                        <circle cx="9.5" cy="7.5" r="1.8" />
+                        <!-- Toe 3 -->
+                        <circle cx="14.5" cy="7.5" r="1.8" />
+                        <!-- Toe 4 -->
+                        <circle cx="17.5" cy="11.5" r="1.8" />
+                    </svg>
+                </div>
+                <span class="project-status">АКТИВЕН</span>
+                <h2 class="project-title">BestDog</h2>
+                <p class="project-desc">Интерактивная игра в породы собак. Оценивайте, зарабатывайте косточки, крутите рулетку достижений и соревнуйтесь в знаниях!</p>
+                <div class="project-action-btn">
+                    Войти в игру
+                    <svg viewBox="0 0 24 24">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </a>
+
+        <!-- Card 2: SpotifyAnalyzer -->
+        <a href="./SpotifyAnalyzer/spotify_analysis.html" class="project-card-link" id="link-spotify">
+            <div class="project-card card-spotify">
+                <div class="card-icon-wrapper">
+                    <!-- Premium Equalizer Soundwave SVG -->
+                    <svg viewBox="0 0 24 24">
+                        <!-- Orbit ring visual representation -->
+                        <circle cx="12" cy="12" r="10" stroke-dasharray="4 3" opacity="0.3"></circle>
+                        <!-- Sound bars -->
+                        <path d="M7 12v-3M7 12v3" />
+                        <path d="M10 12v-6M10 12v6" />
+                        <path d="M13 12v-8M13 12v8" />
+                        <path d="M16 12v-5M16 12v5" />
+                        <path d="M19 12v-3M19 12v3" />
+                    </svg>
+                </div>
+                <span class="project-status">АНАЛИЗАТОР</span>
+                <h2 class="project-title">SpotifyAnalyzer</h2>
+                <p class="project-desc">Глубокое погружение в вашу музыкальную ДНК. Графики темпа (BPM), энергии, танцевальности и детальная статистика любимых треков.</p>
+                <div class="project-action-btn">
+                    Открыть анализ
+                    <svg viewBox="0 0 24 24">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </a>
+
+        <!-- Card 3: EnglishSub -->
+        <a href="./EnglishSub/index.html" class="project-card-link" id="link-englishsub">
+            <div class="project-card card-englishsub">
+                <div class="card-icon-wrapper">
+                    <!-- Premium Captions / Lyric note SVG -->
+                    <svg viewBox="0 0 24 24">
+                        <!-- Chat Bubble -->
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <!-- E -->
+                        <path d="M7 7h3M7 7v6h3M7 10h2.5"></path>
+                        <!-- N -->
+                        <path d="M13 13V7l4 6V7"></path>
+                    </svg>
+                </div>
+                <span class="project-status">ОБУЧЕНИЕ</span>
+                <h2 class="project-title">EnglishSub</h2>
+                <p class="project-desc">Интерактивный тренажер английского языка по субтитрам и песням. Слушайте любимые треки, заполняйте пропуски и изучайте лексику!</p>
+                <div class="project-action-btn">
+                    Начать обучение
+                    <svg viewBox="0 0 24 24">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </a>
+
+    </main>
+
+    <!-- Footer System Status -->
+    <footer>
+        <div class="footer-connection" id="system-status-indicator">
+            <span class="conn-pulse"></span>
+            Все системы запущенны в штатном режиме
+        </div>
+        <div class="footer-copyright" id="copyright-text">
+            &copy; 2026 PROGECTX MULTIVERSE. Все права защищены.
+        </div>
+    </footer>
+
+</body>
+</html>

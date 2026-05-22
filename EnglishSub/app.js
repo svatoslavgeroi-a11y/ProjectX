@@ -1944,13 +1944,26 @@ function initAnalysisCache() {
       localStorage.setItem(CACHE_VERSION_KEY, CURRENT_CACHE_VERSION);
     }
 
-    for (let i = 0; i < localStorage.length; i++) {
+    // Safely iterate backwards to handle dynamic item deletion correctly
+    for (let i = localStorage.length - 1; i >= 0; i--) {
       const key = localStorage.key(i);
       if (key && key.startsWith('lyric_cache_')) {
         const stanzaText = key.replace('lyric_cache_', '');
         const val = localStorage.getItem(key);
         if (val) {
-          analysisCache[stanzaText] = JSON.parse(val);
+          try {
+            const parsed = JSON.parse(val);
+            // Self-healing: Purge empty, incomplete, or corrupted cache records automatically
+            if (parsed && typeof parsed === 'object' && parsed.translation && parsed.translation.trim().length > 0) {
+              analysisCache[stanzaText] = parsed;
+            } else {
+              console.warn(`[Cache Init] Purging invalid/empty cache entry for: "${stanzaText.substring(0, 30)}..."`);
+              localStorage.removeItem(key);
+            }
+          } catch (err) {
+            console.warn(`[Cache Init] Purging corrupted JSON cache entry for: "${stanzaText.substring(0, 30)}..."`);
+            localStorage.removeItem(key);
+          }
         }
       }
     }
@@ -2207,9 +2220,19 @@ function getCachedAnalysis(text) {
   const key = 'lyric_cache_' + text;
   try {
     const cached = localStorage.getItem(key);
-    return cached ? JSON.parse(cached) : null;
+    if (!cached) return null;
+    const parsed = JSON.parse(cached);
+    // Robust validation: Ensure translation is non-empty and parsed object has correct structure
+    if (parsed && typeof parsed === 'object' && parsed.translation && parsed.translation.trim().length > 0) {
+      return parsed;
+    } else {
+      console.warn(`[Cache Get] Purging invalid/empty cache entry on direct access for key: ${key}`);
+      localStorage.removeItem(key);
+      return null;
+    }
   } catch (e) {
     console.error('Error reading from cache', e);
+    localStorage.removeItem(key);
     return null;
   }
 }
@@ -2276,6 +2299,7 @@ function escapeRawNewlinesInJSON(jsonStr) {
 
 // Clean and Parse JSON safely from any textual response (strips markdown, cuts outer texts)
 function cleanAndParseJSON(rawText) {
+  console.log("[JSON Parser] Attempting to clean and parse raw AI response...");
   let cleanText = rawText.trim();
   
   // If the model wrapped the response in a markdown code block ```json ... ```
@@ -2291,17 +2315,29 @@ function cleanAndParseJSON(rawText) {
   try {
     const parsed = JSON.parse(cleanText);
     normalizeParsedData(parsed);
+    console.log("[JSON Parser] Successfully parsed and normalized translation payload.");
     return parsed;
   } catch (e) {
+    console.warn("[JSON Parser] Direct JSON parse failed, trying to extract substring from first brace...", e);
     // If direct parse fails, try to search for the first '{' and the last '}' to extract a JSON block
     const firstBrace = cleanText.indexOf('{');
     const lastBrace = cleanText.lastIndexOf('}');
     if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-      const extracted = cleanText.substring(firstBrace, lastBrace + 1);
-      const parsed = JSON.parse(extracted);
-      normalizeParsedData(parsed);
-      return parsed;
+      try {
+        const extracted = cleanText.substring(firstBrace, lastBrace + 1);
+        const parsed = JSON.parse(extracted);
+        normalizeParsedData(parsed);
+        console.log("[JSON Parser] Successfully parsed extracted JSON brace-block.");
+        return parsed;
+      } catch (innerErr) {
+        console.error("[JSON Parser] JSON parse failure on extracted block:", cleanText);
+        console.error("[JSON Parser] Extracted block was:", cleanText.substring(firstBrace, lastBrace + 1));
+        console.error("[JSON Parser] Extraction error details:", innerErr);
+        throw innerErr;
+      }
     }
+    console.error("[JSON Parser] JSON parse failure on cleaned text:", cleanText);
+    console.error("[JSON Parser] Direct parsing error details:", e);
     throw e; // rethrow if even extraction fails
   }
 }
@@ -2673,7 +2709,7 @@ async function fetchGeminiAnalysis(stanzaText, artistName, songTitle) {
 Твоя задача — проанализировать следующую строфу (группу строк) из этой песни:
 "${stanzaText}"
 Правила анализа:
-Учитывай музыкальный контекст, стиль артиста и скрытые метафоры.
+Учитывай музыкальный контекст, style артиста и скрытые метафоры.
 Грамматику объясняй максимально простым языком, "для чайников", без сложных академических терминов. Сделай акцент на том, какое время здесь используется и почему.
 Проанализируй текст на наличие культурных, исторических, географических или кинематографических отсылок, а также скрытых смыслов или сленга конкретной эпохи. Если они есть, верни их в поле JSON: "culturalLore": "текст объяснения". Если отсылок нет, верни null.
 Выдели два типа учебных данных:
@@ -2704,6 +2740,7 @@ async function fetchGeminiAnalysis(stanzaText, artistName, songTitle) {
   // Check if OpenRouter key is provided
   if (currentApiKey.startsWith('sk-or-')) {
     const url = 'https://openrouter.ai/api/v1/chat/completions';
+    console.log(`[Gemini API] Requesting OpenRouter translation for stanza: "${stanzaText.substring(0, 40).replace(/\n/g, ' ')}..."`);
     
     try {
       const response = await fetch(url, {
@@ -2724,23 +2761,32 @@ async function fetchGeminiAnalysis(stanzaText, artistName, songTitle) {
       });
 
       if (!response.ok) {
-        console.warn(`Primary model request failed with status ${response.status}. Attempting free fallback...`);
+        const errText = await response.text();
+        console.warn(`[Gemini API] Primary OpenRouter request failed with status ${response.status}: ${errText}. Attempting free fallback...`);
         return await fetchOpenRouterFreeFallback(promptText, currentApiKey);
       }
 
       const data = await response.json();
+      console.log("[Gemini API] Raw OpenRouter Response:", data);
+      
+      if (data.error) {
+        console.error("[Gemini API] OpenRouter returned error payload:", data.error);
+        throw new Error(`OpenRouter Error: ${data.error.message || JSON.stringify(data.error)}`);
+      }
+
       const textResponse = data.choices?.[0]?.message?.content;
       if (!textResponse) {
-        throw new Error("No response from OpenRouter");
+        throw new Error("No response content from OpenRouter");
       }
       return cleanAndParseJSON(textResponse);
     } catch (e) {
-      console.warn("Primary API request failed. Executing free fallback as recovery...", e);
+      console.warn("[Gemini API] Primary API request failed. Executing free fallback as recovery...", e);
       return await fetchOpenRouterFreeFallback(promptText, currentApiKey);
     }
   } else {
     // Default Google Gemini 2.0 Flash API
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${currentApiKey}`;
+    console.log(`[Gemini API] Requesting Google Gemini translation for stanza: "${stanzaText.substring(0, 40).replace(/\n/g, ' ')}..."`);
     
     const requestBody = {
       contents: [
@@ -2772,13 +2818,26 @@ async function fetchGeminiAnalysis(stanzaText, artistName, songTitle) {
     });
 
     if (!response.ok) {
-      throw new Error(`Gemini API returned status ${response.status}`);
+      const errText = await response.text();
+      console.error(`[Gemini API] Google Gemini returned error status ${response.status}: ${errText}`);
+      throw new Error(`Gemini API returned status ${response.status}: ${errText}`);
     }
 
     const data = await response.json();
+    console.log("[Gemini API] Raw Google Gemini Response:", data);
+    
+    if (data.promptFeedback && data.promptFeedback.blockReason) {
+      console.error("[Gemini API] Google Gemini blocked the prompt due to:", data.promptFeedback.blockReason);
+      throw new Error(`Google Gemini blocked prompt: ${data.promptFeedback.blockReason}`);
+    }
+
     const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!textResponse) {
-      throw new Error("No response from Gemini");
+      if (data.candidates?.[0]?.finishReason) {
+        console.error("[Gemini API] Google Gemini failed to generate content. Finish reason:", data.candidates[0].finishReason);
+        throw new Error(`Google Gemini finish reason: ${data.candidates[0].finishReason}`);
+      }
+      throw new Error("No response content from Google Gemini");
     }
 
     return cleanAndParseJSON(textResponse);
@@ -5652,6 +5711,49 @@ function setupDictionaryUI() {
   applyDictSize();
   // ──────────────────────────────────────────────────────────────────────────
 
+  // ── Training Resize Buttons ────────────────────────────────────────────────
+  const trainingCard = document.getElementById('trainingModalCard');
+  const trainingWidthBtn = document.getElementById('trainingExpandWidthBtn');
+  const TRAINING_SIZE_KEY = 'training_size_prefs';
+
+  let trainingSizeState = { wide: false };
+  try {
+    const saved = localStorage.getItem(TRAINING_SIZE_KEY);
+    if (saved) trainingSizeState = { ...trainingSizeState, ...JSON.parse(saved) };
+  } catch(e) {}
+
+  // Force tall mode state off for training card
+  trainingSizeState.tall = false;
+
+  function applyTrainingSize() {
+    if (!trainingCard) return;
+    trainingCard.classList.toggle('dict-wide', trainingSizeState.wide);
+    trainingCard.classList.remove('dict-tall'); // Never tall
+
+    if (trainingWidthBtn) {
+      trainingWidthBtn.classList.toggle('dict-expand-btn-active', trainingSizeState.wide);
+      trainingWidthBtn.title = trainingSizeState.wide ? 'Сжать по ширине' : 'Расширить по ширине';
+    }
+
+    localStorage.setItem(TRAINING_SIZE_KEY, JSON.stringify(trainingSizeState));
+  }
+
+  if (trainingWidthBtn) {
+    trainingWidthBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      trainingSizeState.wide = !trainingSizeState.wide;
+      applyTrainingSize();
+    });
+  }
+
+  // Apply saved size immediately when training modal is loaded/opened
+  const openTrainingBtnEl = document.getElementById('openTrainingBtn');
+  if (openTrainingBtnEl) {
+    openTrainingBtnEl.addEventListener('click', applyTrainingSize, { once: false });
+  }
+  applyTrainingSize();
+  // ──────────────────────────────────────────────────────────────────────────
+
   // 1. Tab Switching Event Listeners
   const tabPersonal = document.getElementById('dictTabPersonal');
   const tabEssential = document.getElementById('dictTabEssential');
@@ -6622,6 +6724,20 @@ function setupDictionaryUI() {
     });
   }
 
+  // 3h. Training Order Select listener (Shuffle or Ordered)
+  const trainingOrderSelect = document.getElementById('trainingOrderSelect');
+  if (trainingOrderSelect) {
+    const savedOrder = localStorage.getItem('galaxy_training_order') || 'shuffle';
+    trainingOrderSelect.value = savedOrder;
+
+    trainingOrderSelect.addEventListener('change', () => {
+      localStorage.setItem('galaxy_training_order', trainingOrderSelect.value);
+      clearStudySession();
+      startStudySession();
+      resetFlashcard();
+    });
+  }
+
   // Open dictionary modal
   const openDictionaryModal = () => {
     window.dictForceStudyAll = false; // Reset force-study on new modal session
@@ -7561,6 +7677,15 @@ function setTrainerCardWord(word) {
   }
 }
 
+// Fisher-Yates Shuffle Algorithm for randomizing training session cards
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 // Initialize and build a Quizlet-style vocabulary study session
 function startStudySession() {
   const filteredWords = getFilteredDictionaryWords();
@@ -7639,17 +7764,18 @@ function startStudySession() {
     });
   }
   
-  // If pool is still below limit and we have other words, fill it up to limit
-  if (pool.length < limit) {
-    filteredWords.forEach(w => {
-      if (!pool.some(item => item.word.toLowerCase() === w.word.toLowerCase())) {
-        pool.push(w);
-      }
-    });
-  }
+  // Enforce strict Leitner spaced repetition: do NOT supplement the training pool with already learned, non-due words!
+  // If the pool of due/new words is smaller than the limit, the session size will simply be smaller.
 
   // Max cap of words per session based on selected limit
   pool = pool.slice(0, limit);
+
+  // Randomize words order if Shuffle mode is enabled
+  const orderSelect = document.getElementById('trainingOrderSelect');
+  const isShuffle = orderSelect ? orderSelect.value === 'shuffle' : true;
+  if (isShuffle) {
+    shuffleArray(pool);
+  }
 
   // Set active session queue state
   sessionQueue = pool;
@@ -10579,3 +10705,114 @@ function setupRulesUI() {
     });
   }
 }
+
+// ── Mobile Bottom Navigation Bar Sync Controller ──────────────────────────
+(function initMobileBottomNav() {
+  const homeBtn = document.getElementById('mobileNavHomeBtn');
+  const dictBtn = document.getElementById('mobileNavDictBtn');
+  const trainBtn = document.getElementById('mobileNavTrainBtn');
+  const videoBtn = document.getElementById('mobileNavVideoBtn');
+  const notesBtn = document.getElementById('mobileNavNotesBtn');
+
+  const openDictEl = document.getElementById('openDictionaryBtn');
+  const openTrainEl = document.getElementById('openTrainingBtn');
+  const openVideoEl = document.getElementById('openVideoCourseBtn');
+  const openNotebookEl = document.getElementById('openNotebookBtn');
+
+  // Modals overlays mapping
+  const dictionaryModal = document.getElementById('dictionaryModal');
+  const trainingModal = document.getElementById('trainingModal');
+  const videoCourseModal = document.getElementById('videoCourseModal');
+  const notebookModal = document.getElementById('notebookModal');
+
+  const navItems = [homeBtn, dictBtn, trainBtn, videoBtn, notesBtn];
+
+  function setActiveTab(activeBtn) {
+    navItems.forEach(btn => {
+      if (btn) btn.classList.toggle('active', btn === activeBtn);
+    });
+  }
+
+  function closeAllModals() {
+    [dictionaryModal, trainingModal, videoCourseModal, notebookModal].forEach(modal => {
+      if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('open');
+      }
+    });
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
+  }
+
+  if (homeBtn) {
+    homeBtn.addEventListener('click', () => {
+      closeAllModals();
+      setActiveTab(homeBtn);
+    });
+  }
+
+  if (dictBtn && openDictEl) {
+    dictBtn.addEventListener('click', () => {
+      closeAllModals();
+      openDictEl.click();
+      setActiveTab(dictBtn);
+    });
+  }
+
+  if (trainBtn && openTrainEl) {
+    trainBtn.addEventListener('click', () => {
+      closeAllModals();
+      openTrainEl.click();
+      setActiveTab(trainBtn);
+    });
+  }
+
+  if (videoBtn && openVideoEl) {
+    videoBtn.addEventListener('click', () => {
+      closeAllModals();
+      openVideoEl.click();
+      setActiveTab(videoBtn);
+    });
+  }
+
+  if (notesBtn && openNotebookEl) {
+    notesBtn.addEventListener('click', () => {
+      closeAllModals();
+      openNotebookEl.click();
+      setActiveTab(notesBtn);
+    });
+  }
+
+  // Auto-synchronize tab highlighted state when modals are opened or closed via other means (e.g. desktop clicks, inline buttons)
+  const observerConfig = { attributes: true, attributeFilter: ['style', 'class'] };
+
+  function syncActiveNavState() {
+    if (dictionaryModal && dictionaryModal.style.display !== 'none') {
+      setActiveTab(dictBtn);
+    } else if (trainingModal && trainingModal.style.display !== 'none') {
+      setActiveTab(trainBtn);
+    } else if (videoCourseModal && videoCourseModal.style.display !== 'none') {
+      setActiveTab(videoBtn);
+    } else if (notebookModal && (notebookModal.style.display !== 'none' || notebookModal.classList.contains('notebook-drawer-open') || notebookModal.classList.contains('open'))) {
+      setActiveTab(notesBtn);
+    } else {
+      setActiveTab(homeBtn);
+    }
+  }
+
+  // Observe modals to keep bottom navigation in sync
+  [dictionaryModal, trainingModal, videoCourseModal, notebookModal].forEach(modal => {
+    if (modal) {
+      const observer = new MutationObserver(syncActiveNavState);
+      observer.observe(modal, observerConfig);
+    }
+  });
+
+  // Also listen to close triggers inside notebook
+  const notebookClose = document.getElementById('closeNotebookBtn');
+  if (notebookClose) {
+    notebookClose.addEventListener('click', () => {
+      setTimeout(syncActiveNavState, 50);
+    });
+  }
+})();

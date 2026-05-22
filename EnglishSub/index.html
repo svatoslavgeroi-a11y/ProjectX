@@ -695,29 +695,41 @@
 
   <!-- Training Modal -->
   <div class="modal-overlay" id="trainingModal" style="display: none; z-index: 10050;">
-    <div class="modal-card" style="max-width: 480px; width: 90%; height: auto; min-height: 520px; display: flex; flex-direction: column; box-sizing: border-box;">
-      <div class="modal-header" style="flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; padding-bottom: 10px; gap: 10px;">
-        <h3 style="margin: 0; font-weight: 700; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 55%;">
+    <div class="modal-card" id="trainingModalCard" style="max-width: 480px; width: 90%; height: auto; min-height: 520px; display: flex; flex-direction: column; box-sizing: border-box;">
+      <div class="modal-header" style="flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; padding-bottom: 8px; gap: 10px; border-bottom: none !important;">
+        <h3 style="margin: 0; font-weight: 700; color: var(--text-main); font-size: 1.05rem; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%;">
           🔥 Тренировка (<span id="trainingCategoryLabel" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Все слова</span>)
         </h3>
-        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-          <select id="trainingTypeSelect" class="premium-micro-select" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; height: 26px; border: 1px solid var(--border-glass);">
+        <div style="display: flex; align-items: center; flex-shrink: 0; gap: 6px;">
+          <button id="trainingExpandWidthBtn" title="Расширить по ширине" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-sub); border-radius: 8px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; outline: none;">↔️</button>
+          <button class="modal-close-btn" id="closeTrainingModalBtn" style="background: none; border: none; color: var(--text-sub); font-size: 1.2rem; cursor: pointer; outline: none;">✕</button>
+        </div>
+      </div>
+
+      <!-- Training Settings Bar -->
+      <div id="trainingSettingsBar" style="flex-shrink: 0; padding: 4px 1.5rem 12px 1.5rem; border-bottom: 1px solid var(--border-glass); display: flex; align-items: center; justify-content: space-between; gap: 8px; box-sizing: border-box; flex-wrap: wrap;">
+        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px;">Параметры:</span>
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <select id="trainingTypeSelect" class="premium-micro-select" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; height: 26px; border: 1px solid var(--border-glass); outline: none;">
             <option value="all">📚 Всё подряд</option>
             <option value="words">🔤 Только слова</option>
             <option value="phrases">💬 Только фразы</option>
           </select>
-          <select id="trainingModeSelect" class="premium-micro-select" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; height: 26px; border: 1px solid var(--border-glass);">
+          <select id="trainingModeSelect" class="premium-micro-select" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; height: 26px; border: 1px solid var(--border-glass); outline: none;">
             <option value="direct">EN ➔ RU</option>
             <option value="reverse">RU ➔ EN</option>
             <option value="def_to_en">💡 Значение ➔ EN</option>
             <option value="en_to_def">💡 EN ➔ Значение</option>
           </select>
-          <select id="trainingLimitSelect" class="premium-micro-select" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; height: 26px; border: 1px solid var(--border-glass);" title="Размер сессии тренировки">
+          <select id="trainingLimitSelect" class="premium-micro-select" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; height: 26px; border: 1px solid var(--border-glass); outline: none;" title="Размер сессии тренировки">
             <option value="20">🔢 20</option>
             <option value="40">🔢 40</option>
             <option value="all">♾️ Всё</option>
           </select>
-          <button class="modal-close-btn" id="closeTrainingModalBtn" style="background: none; border: none; color: var(--text-sub); font-size: 1.2rem; cursor: pointer; outline: none;">✕</button>
+          <select id="trainingOrderSelect" class="premium-micro-select" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; height: 26px; border: 1px solid var(--border-glass); outline: none;" title="Порядок показа слов">
+            <option value="shuffle">🔀 Случайно</option>
+            <option value="ordered">🔢 По порядку</option>
+          </select>
         </div>
       </div>
 
@@ -748,7 +760,7 @@
       </div>
 
       <!-- Main training container -->
-      <div class="modal-body" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; flex-grow: 1; box-sizing: border-box; gap: 1.25rem;">
+      <div class="modal-body" style="display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 1.5rem; flex-grow: 1; min-height: 0; overflow-y: auto; box-sizing: border-box; gap: 1.25rem; width: 100%;">
         
         <!-- Session Progress Bar Container -->
         <div id="sessionProgressContainer" style="width: 100%; max-width: 340px; display: none; flex-direction: column; gap: 8px; margin-bottom: 5px; flex-shrink: 0; box-sizing: border-box;">
@@ -1300,6 +1312,30 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Glassmorphic Mobile Bottom Navigation Bar -->
+  <div id="mobileBottomNav" class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" id="mobileNavHomeBtn">
+      <span class="mobile-nav-icon">🏠</span>
+      <span class="mobile-nav-label">Главная</span>
+    </button>
+    <button class="mobile-nav-item" id="mobileNavDictBtn">
+      <span class="mobile-nav-icon">📚</span>
+      <span class="mobile-nav-label">Словарь</span>
+    </button>
+    <button class="mobile-nav-item" id="mobileNavTrainBtn">
+      <span class="mobile-nav-icon">🔥</span>
+      <span class="mobile-nav-label">Тренинг</span>
+    </button>
+    <button class="mobile-nav-item" id="mobileNavVideoBtn">
+      <span class="mobile-nav-icon">🎬</span>
+      <span class="mobile-nav-label">Курс</span>
+    </button>
+    <button class="mobile-nav-item" id="mobileNavNotesBtn">
+      <span class="mobile-nav-icon">📓</span>
+      <span class="mobile-nav-label">Заметки</span>
+    </button>
   </div>
 
   <script src="playlist_db.js?v=2.5.1"></script>

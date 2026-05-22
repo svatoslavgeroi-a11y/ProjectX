@@ -2232,7 +2232,8 @@ body.light-theme .premium-search-box {
 }
 
 /* Dictionary modal — flex scroll area + clickable footer */
-#dictionaryModal .modal-card {
+#dictionaryModal .modal-card,
+#trainingModalCard {
   min-height: 0;
   overflow: hidden;
   transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
@@ -2241,21 +2242,41 @@ body.light-theme .premium-search-box {
 }
 
 /* Width expanded */
-#dictionaryModal .modal-card.dict-wide {
+#dictionaryModal .modal-card.dict-wide,
+#trainingModalCard.dict-wide {
   max-width: 780px !important;
   width: 95% !important;
 }
 
 /* Height expanded */
-#dictionaryModal .modal-card.dict-tall {
+#dictionaryModal .modal-card.dict-tall,
+#trainingModalCard.dict-tall {
   height: 85vh !important;
 }
 
 /* Both expanded */
-#dictionaryModal .modal-card.dict-wide.dict-tall {
+#dictionaryModal .modal-card.dict-wide.dict-tall,
+#trainingModalCard.dict-wide.dict-tall {
   max-width: 780px !important;
   width: 95% !important;
   height: 85vh !important;
+}
+
+/* Custom scale for flashcard when modal is wide */
+#trainingModalCard.dict-wide .flashcard-container {
+  max-width: 580px;
+  height: 280px;
+}
+
+/* Custom scale for flashcard when modal is tall but not wide */
+#trainingModalCard.dict-tall:not(.dict-wide) .flashcard-container {
+  height: 260px;
+}
+
+/* Custom scale when both wide and tall */
+#trainingModalCard.dict-wide.dict-tall .flashcard-container {
+  max-width: 580px;
+  height: 320px;
 }
 
 /* Active state for expand buttons */
@@ -4751,6 +4772,460 @@ body.gray-theme #manualPhraseCustomCategoryPillsContainer {
 body.light-theme #notebookNotesSearchContainer:focus-within {
   box-shadow: 0 0 12px rgba(26, 163, 74, 0.1);
   background: rgba(0, 0, 0, 0.02) !important;
+}
+
+/* ==========================================================================
+   10. PREMIUM SPOTIFY-INSPIRED MOBILE RESPONSIVE STYLING SHEET
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* 10a. Hide Desktop Navbar Trigger Buttons & Sidebar Tab Button */
+  #openDictionaryBtn, 
+  #openRulesBtn, 
+  #openTrainingBtn, 
+  #openVideoCourseBtn, 
+  #openNotebookBtn,
+  #notebookDrawerTab {
+    display: none !important;
+  }
+
+  /* 10b. Responsive Two-Row Navbar Layout */
+  .navbar {
+    flex-wrap: wrap !important;
+    padding: 0.6rem 1rem !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 8px !important;
+    height: auto !important;
+  }
+  
+  .nav-brand {
+    order: 1 !important;
+    font-size: 1.15rem !important;
+    max-width: 60%;
+  }
+  
+  .navbar .nav-controls {
+    order: 2 !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+  
+  .song-selector-container {
+    order: 3 !important;
+    width: 100% !important;
+    margin: 4px 0 2px 0 !important;
+  }
+  
+  .autocomplete-wrapper {
+    width: 100% !important;
+  }
+  
+  .search-input-wrapper {
+    width: 100% !important;
+  }
+  
+  #songSearchInput {
+    height: 38px !important;
+    font-size: 0.85rem !important;
+    padding-left: 2.25rem !important;
+  }
+  
+  .search-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* 10c. Mobile Layout Base Workspaces */
+  .main-layout {
+    padding: 1rem 0.75rem 80px 0.75rem !important;
+    gap: 1.25rem !important;
+  }
+
+  /* Welcome Dashboard Layout Card */
+  #welcomeDashboardCard {
+    padding: 1.5rem 1rem !important;
+    border-radius: 16px !important;
+    gap: 1.25rem !important;
+  }
+  
+  #welcomeDashboardCard h1 {
+    font-size: 1.6rem !important;
+  }
+  
+  #welcomeDashboardCard p {
+    font-size: 0.85rem !important;
+  }
+  
+  .dashboard-nav-card {
+    padding: 1rem !important;
+    border-radius: 16px !important;
+  }
+
+  /* 10d. Lyrics Section & Individual Lines Sizing */
+  .song-header {
+    padding: 0.85rem !important;
+    border-radius: 16px !important;
+    gap: 0.85rem !important;
+  }
+  
+  .album-art-placeholder {
+    width: 55px !important;
+    height: 55px !important;
+    font-size: 1.5rem !important;
+    border-radius: 10px !important;
+  }
+  
+  .song-badge {
+    font-size: 0.65rem !important;
+    padding: 0.1rem 0.4rem !important;
+  }
+  
+  .song-title {
+    font-size: 1.15rem !important;
+  }
+  
+  .artist-name {
+    font-size: 0.8rem !important;
+  }
+
+  .lyrics-board-card {
+    padding: 1rem !important;
+    border-radius: 16px !important;
+    gap: 1rem !important;
+  }
+  
+  .lyrics-hint {
+    font-size: 0.78rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  .lyric-line {
+    font-size: 1.05rem !important;
+    padding: 0.65rem 0.75rem !important;
+    gap: 0.65rem !important;
+    border-radius: 8px !important;
+  }
+  
+  .line-number {
+    width: 18px !important;
+    font-size: 0.7rem !important;
+  }
+  
+  .line-translation-live {
+    margin-left: calc(18px + 0.65rem) !important;
+    font-size: 0.85rem !important;
+    margin-top: 8px !important;
+  }
+
+  /* 10e. Mobile Glassmorphic Bottom Navigation Bar styling */
+  .mobile-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 56px !important;
+    background: rgba(12, 12, 16, 0.88) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid var(--border-glass) !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    z-index: 10000 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4) !important;
+  }
+  
+  body.light-theme .mobile-bottom-nav {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04) !important;
+  }
+  
+  body.gray-theme .mobile-bottom-nav {
+    background: rgba(38, 41, 48, 0.92) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .mobile-nav-item {
+    background: none !important;
+    border: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    color: var(--text-sub) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    outline: none !important;
+    flex: 1 !important;
+    padding: 4px 0 !important;
+  }
+
+  .mobile-nav-item.active {
+    color: var(--accent-spotify) !important;
+  }
+  
+  body.gray-theme .mobile-nav-item.active {
+    color: #6366f1 !important;
+  }
+  
+  body.light-theme .mobile-nav-item.active {
+    color: #10b981 !important;
+  }
+
+  .mobile-nav-icon {
+    font-size: 1.15rem !important;
+    transition: transform 0.2s ease !important;
+  }
+
+  .mobile-nav-item.active .mobile-nav-icon {
+    transform: scale(1.15) !important;
+  }
+
+  .mobile-nav-label {
+    font-size: 0.65rem !important;
+    font-weight: 600 !important;
+  }
+
+  /* 10f. Modals Optimization for Mobile Viewports */
+  .modal-overlay {
+    padding: 0.5rem !important;
+    align-items: center !important;
+  }
+
+  .modal-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    border-radius: 16px !important;
+    max-height: 90vh !important;
+    box-sizing: border-box !important;
+  }
+  
+  .modal-header {
+    padding: 1rem 1.25rem 10px 1.25rem !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .modal-header h3 {
+    font-size: 1rem !important;
+  }
+  
+  .modal-body {
+    padding: 1rem 1.25rem !important;
+  }
+
+  /* Dictionary Modal specific Mobile scaling */
+  .dict-tabs {
+    padding: 0 1.25rem !important;
+    gap: 12px !important;
+  }
+  
+  .dict-tab {
+    font-size: 0.8rem !important;
+    padding: 8px 0 !important;
+  }
+  
+  .dictionary-controls {
+    padding: 10px 1.25rem !important;
+    gap: 8px !important;
+  }
+  
+  #dictSearchInput {
+    height: 34px !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Training Modal specific Mobile layout */
+  #trainingSettingsBar {
+    padding: 4px 1.25rem 10px 1.25rem !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .premium-micro-select {
+    font-size: 0.7rem !important;
+    padding: 2px 6px !important;
+    height: 26px !important;
+    flex: 1 1 calc(50% - 4px) !important; /* Wrap perfectly */
+  }
+
+  /* 3D Flashcard Responsive Sizing */
+  .flashcard-container {
+    height: 200px !important;
+    margin: 10px 0 !important;
+    max-width: 100% !important;
+  }
+  
+  .card-face {
+    padding: 1.2rem !important;
+  }
+  
+  .card-english {
+    font-size: 1.3rem !important;
+  }
+  
+  .card-definition {
+    font-size: 0.8rem !important;
+  }
+  
+  .card-russian {
+    font-size: 1.15rem !important;
+  }
+  
+  .card-rule-box {
+    margin-top: 8px !important;
+    padding: 6px 10px !important;
+  }
+  
+  .card-rule-text {
+    font-size: 0.72rem !important;
+  }
+
+  .card-controls-grid {
+    gap: 6px !important;
+  }
+  
+  .modal-btn {
+    font-size: 0.75rem !important;
+    padding: 6px 10px !important;
+  }
+
+  /* 10g. Interactive Video Course Modal Mobile Stacking */
+  .video-course-modal-card {
+    height: 92vh !important;
+    width: 100% !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  
+  .video-course-modal-card .modal-header {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid var(--border-glass) !important;
+  }
+  
+  .video-course-progress-panel {
+    padding: 8px 16px !important;
+    gap: 6px !important;
+  }
+  
+  .progress-details {
+    font-size: 0.7rem !important;
+  }
+  
+  .video-course-controls {
+    padding: 8px 16px !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    border-bottom: 1px solid var(--border-glass) !important;
+  }
+  
+  .filter-pills {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+  
+  .filter-pill {
+    padding: 4px 10px !important;
+    font-size: 0.7rem !important;
+    flex: 1 !important;
+    text-align: center !important;
+  }
+  
+  .search-box-wrapper {
+    width: 100% !important;
+  }
+  
+  #videoSearchInput {
+    height: 32px !important;
+    font-size: 0.78rem !important;
+  }
+  
+  .video-course-body {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+    height: calc(100% - 160px) !important;
+  }
+  
+  .player-container-pane {
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    background: var(--bg-modal) !important;
+    padding: 10px 16px !important;
+    border-bottom: 1.5px solid var(--border-glass) !important;
+    box-sizing: border-box !important;
+  }
+  
+  .video-player-wrapper {
+    aspect-ratio: 16/9 !important;
+    height: auto !important;
+    border-radius: 12px !important;
+  }
+  
+  .lessons-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    overflow-y: visible !important;
+    border-right: none !important;
+    padding: 12px 16px !important;
+    box-sizing: border-box !important;
+  }
+  
+  .lessons-list {
+    height: auto !important;
+    overflow-y: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  /* 10h. Full-Screen Mobile Notebook Drawer */
+  .notebook-modal-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .notebook-header {
+    padding: 12px 16px !important;
+  }
+  
+  .notebook-body {
+    padding: 12px 16px !important;
+  }
+
+  /* 10i. Word Detail Box Padding adjustments */
+  .word-detail-box {
+    margin-top: 0.75rem !important;
+    padding-top: 0.75rem !important;
+  }
+
+  /* 10j. Sidebar Slider Panel (Mobile Slide-In) */
+  .sidebar-panel {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  .sidebar-header {
+    padding: 1.25rem !important;
+  }
+  
+  .sidebar-content {
+    padding: 1.25rem !important;
+    gap: 1.25rem !important;
+  }
 }
 
 
